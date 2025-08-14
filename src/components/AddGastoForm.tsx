@@ -13,7 +13,7 @@ const CATEGORIAS = [
   '⛽ Combustível',
   '🍽️ Alimentação',
   '🏨 Hospedagem', 
-  '⭕ Outros'
+  '🎯 Outros'
 ];
 
 // RESPONSÁVEIS - baseado no que vi na sua tabela

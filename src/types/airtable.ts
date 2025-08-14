@@ -1,19 +1,20 @@
-// Airtable Base Types
+// src/types/airtable.ts - TIPOS FINAIS CARRETERA AUSTRAL
 export interface AirtableRecord<T = any> {
   id: string;
   createdTime: string;
   fields: T;
 }
 
-// Gastos Table - CAMPOS EXATOS DA SUA TABELA
+// Gastos Table - CAMPOS CORRETOS
 export interface GastoFields {
-  Categoria: string; // Simplificado - aceita qualquer string (incluindo emojis)
+  Categoria: string; // Aceita qualquer string (incluindo emojis)
   Valor: number;
   Responsável: string;
   Descrição?: string;
   Local?: string;
   Método?: string;
   Data: string;
+  Dia?: number; // Para link com roteiro
 }
 
 export type GastoRecord = AirtableRecord<GastoFields>;
@@ -22,43 +23,45 @@ export type GastoRecord = AirtableRecord<GastoFields>;
 export interface RoteiroFields {
   Dia: number;
   Data: string;
-  Origem: string;
-  Destino: string;
-  Distancia_KM: number;
-  Status: 'Não iniciado' | 'Em andamento' | 'Concluído';
-  Dificuldade: 'Fácil' | 'Médio' | 'Difícil' | 'Extremo';
-  Observacoes?: string;
+  Trecho: string; // "São Paulo → Guarapuva" formato
+  Status: '📋 Planejado' | '🚗 Em Andamento' | '✅ Concluído';
+  Combustivel: boolean; // TRUE/FALSE
+  Dificuldade: '🟢 Fácil' | '🟡 Médio' | '🟠 Difícil' | '🔴 Crítico';
 }
 
 export type RoteiroRecord = AirtableRecord<RoteiroFields>;
 
 // Hotéis Table
 export interface HotelFields {
-  Nome: string;
-  Cidade: string;
-  Preco_Diaria: number;
-  Status: 'Pesquisando' | 'Cotando' | 'Reservado' | 'Confirmado';
-  Dia?: string;
-  Contato?: string;
-  Observacoes?: string;
-  Link_Booking?: string;
+  Hotel: string; // Nome do hotel
+  Data: string; // Data de check-in 
+  'Check-out': string; // Data de check-out
+  Preço: number;
+  Status: '✅ Reservado' | '🟡 Pesquisando';
+  Confirmação?: string;
+  Link?: string;
+  Endereço?: string;
+  Observação?: string;
 }
 
 export type HotelRecord = AirtableRecord<HotelFields>;
 
-// Gasolina Table
-export interface GasolinaFields {
-  Nome_Posto: string;
-  Cidade: string;
+// Gasolina/Postos Table
+export interface PostoFields {
+  Posto: string; // Nome do posto
+  Dia: number; // Dia da viagem (1-20)
+  Localização: string; // Cidade/endereço
   Coordenadas?: string;
-  Status: 'Identificado' | 'Abastecido';
-  Preco_Litro?: number;
-  Litros_Abastecidos?: number;
-  Total_Gasto?: number;
-  Observacoes?: string;
+  'KM Acumulado': number;
+  'KM Trecho': number;
+  Bandeira?: string;
+  'Litros estimado': number;
+  'Valor total': string; // "R$ 110,50" formato
+  Observações?: string; // Informações cruciais
+  Status: '📋 Planejado' | '✅ Concluído' | '🔴 Fechado';
 }
 
-export type GasolinaRecord = AirtableRecord<GasolinaFields>;
+export type PostoRecord = AirtableRecord<PostoFields>;
 
 // Visitas Table (POIs)
 export interface VisitaFields {
@@ -74,6 +77,7 @@ export interface VisitaFields {
     filename: string;
   }[];
   Coordenadas?: string;
+  Dia?: number; // Para link com roteiro
 }
 
 export type VisitaRecord = AirtableRecord<VisitaFields>;
@@ -119,4 +123,63 @@ export interface AirtableError {
     type: string;
     message: string;
   };
+}
+
+// Tipos específicos para a aplicação
+export interface ProgressoViagem {
+  diaAtual: number;
+  totalDias: number;
+  kmPercorridos: number;
+  kmTotal: number;
+  percentualConcluido: number;
+  diasRestantes: number;
+  proximoMarco: {
+    tipo: 'fronteira' | 'balsa' | 'cidade' | 'critico';
+    nome: string;
+    dia: number;
+    descricao: string;
+  } | null;
+}
+
+export interface AlertaItem {
+  tipo: 'fronteira' | 'posto' | 'hotel' | 'balsa' | 'critico';
+  prioridade: 'alta' | 'media' | 'baixa';
+  titulo: string;
+  descricao: string;
+  icone: string;
+  quando: 'hoje' | 'amanha' | 'proximo';
+}
+
+export interface DiaCompletoData {
+  roteiro: RoteiroRecord | null;
+  hotel: HotelRecord | null;
+  postos: PostoRecord[];
+  gastos: GastoRecord[];
+  progresso: ProgressoViagem;
+  alertas: AlertaItem[];
+  loading: boolean;
+  error: string | null;
+}
+
+// Estatísticas da viagem
+export interface EstatisticasViagem {
+  totalGastos: number;
+  orcamentoUsado: number;
+  projecaoFinal: number;
+  mediaGastosDia: number;
+  hoteisConfirmados: number;
+  hoteisTotal: number;
+  postosDisponiveis: number;
+  diasConcluidos: number;
+  kmPercorridos: number;
+  percentualViagem: number;
+}
+
+// Status da aplicação
+export interface StatusApp {
+  versao: string;
+  ultimaAtualizacao: string;
+  conectividadeAirtable: boolean;
+  dadosCarregados: boolean;
+  erros: string[];
 }

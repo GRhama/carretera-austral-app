@@ -20,26 +20,25 @@ Airtable.configure({
 
 export const base = Airtable.base(AIRTABLE_CONFIG.baseId);
 
+// Validação da configuração
 export const validateConfig = (): boolean => {
   const { baseId, apiKey, tables } = AIRTABLE_CONFIG;
   
+  if (!baseId || !apiKey) {
+    console.error('⚠️ Base ID ou API Key não configurados!');
+    return false;
+  }
+  
   if (baseId === 'YOUR_BASE_ID' || apiKey === 'YOUR_NEW_TOKEN') {
-    console.error('⚠️ Airtable config não configurado! Atualize src/config/airtable.ts');
+    console.error('⚠️ Configuração com valores placeholder!');
     return false;
   }
   
-  const missingTables = Object.entries(tables)
-    .filter(([_, id]) => id.startsWith('YOUR_'))
-    .map(([name]) => name);
-    
-  if (missingTables.length > 0) {
-    console.error(`⚠️ Table IDs não configurados: ${missingTables.join(', ')}`);
-    return false;
-  }
-  
+  console.log('✅ Configuração Airtable válida');
   return true;
 };
 
+// Helper para acessar tabelas
 export const tables = {
   gastos: () => base(AIRTABLE_CONFIG.tables.gastos),
   roteiro: () => base(AIRTABLE_CONFIG.tables.roteiro),
@@ -48,3 +47,9 @@ export const tables = {
   visitas: () => base(AIRTABLE_CONFIG.tables.visitas),
   documentos: () => base(AIRTABLE_CONFIG.tables.documentos)
 };
+
+// Logging para debug
+console.log('🔧 Airtable configurado:');
+console.log(`📋 Base: ${AIRTABLE_CONFIG.baseId}`);
+console.log(`🔗 Tables: ${Object.keys(AIRTABLE_CONFIG.tables).length} configuradas`);
+console.log('✅ Client inicializado');
