@@ -39,5 +39,3 @@ npm run deploy
 1. npm run dev
 2. Adicionar um gasto
 3. Verificar se salvou no Airtable
-
-**Status:** MVP Sprint 0 completo - Ready for configuration!
