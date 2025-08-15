@@ -1,4 +1,4 @@
-// src/components/ConsultaMatinal.tsx - VERSÃO FINAL PARA DEPLOY
+// src/components/ConsultaMatinal.tsx - LÓGICA COMPLETA VALIDADA
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Hotel, Fuel, DollarSign, AlertTriangle } from 'lucide-react';
 import { tables, validateConfig } from '../config/airtable';
@@ -19,6 +19,16 @@ interface ProgressoData {
   kmTotal: 10385;
 }
 
+interface PostoData {
+  nome: string;
+  local: string;
+  km: number;          // KM do trecho individual  
+  kmAcumulado: number; // Para ordenação geográfica
+  status: string;
+  observacoes?: string;
+  isUltimo: boolean;   // Flag para identificar destino final
+}
+
 // Mapeamento de distâncias
 const DISTANCIAS: Record<string, number> = {
   "São Paulo → Guarapuava": 460,
@@ -31,6 +41,7 @@ const DISTANCIAS: Record<string, number> = {
 const ConsultaMatinal: React.FC = () => {
   const [diaAtual, setDiaAtual] = useState(1);
   const [roteiro, setRoteiro] = useState<RoteiroData | null>(null);
+  const [postos, setPostos] = useState<PostoData[]>([]);
   const [progresso, setProgresso] = useState<ProgressoData>({
     diaAtual: 1,
     totalDias: 20,
@@ -79,6 +90,8 @@ const ConsultaMatinal: React.FC = () => {
       setError(null);
 
       const dataCalculada = calcularDataViagem(dia);
+      
+      // Buscar roteiro
       const resultadoRoteiro = await tables.roteiro().select({
         filterByFormula: `{Dia} = ${dia}`,
         maxRecords: 1
@@ -97,6 +110,32 @@ const ConsultaMatinal: React.FC = () => {
       } else {
         setRoteiro(null);
       }
+
+      // 🎯 BUSCAR POSTOS COM LÓGICA COMPLETA
+      const resultadoPostos = await tables.gasolina().select({
+        filterByFormula: `{Dia} = ${dia}`,
+        maxRecords: 10
+      }).firstPage().catch(() => []);
+
+      // Processar e ordenar postos
+      const postosOrdenados = resultadoPostos.map(record => ({
+        nome: String(record.fields.Posto || 'Posto'),
+        local: String(record.fields.Localização || 'Local não definido'),
+        km: Number(record.fields['KM Trecho'] || 0),
+        kmAcumulado: Number(record.fields['KM Acumulado'] || 0),
+        status: String(record.fields.Status || '📋 Planejado'),
+        observacoes: record.fields.Observações ? String(record.fields.Observações) : undefined,
+        isUltimo: false // Será definido depois da ordenação
+      }))
+      .sort((a, b) => a.kmAcumulado - b.kmAcumulado);
+
+      // 🔧 IDENTIFICAR ÚLTIMO POSTO (DESTINO FINAL)
+      const postosProcessados = postosOrdenados.map((posto, index) => ({
+        ...posto,
+        isUltimo: index === postosOrdenados.length - 1 // Último da lista = destino final
+      }));
+
+      setPostos(postosProcessados);
 
       const kmPercorridosCalculado = dia > 1 ? (dia - 1) * 520 : 0;
       const percentualCalculado = (kmPercorridosCalculado / 10385) * 100;
@@ -345,24 +384,112 @@ const ConsultaMatinal: React.FC = () => {
           </div>
         </div>
 
+        {/* 🎯 POSTOS COM LÓGICA COMPLETA VALIDADA */}
         <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
           <div className="flex items-center mb-6">
             <Fuel className="h-6 w-6 text-blue-600 mr-2" />
-            <h2 className="text-xl font-bold text-gray-900">Postos Estratégicos</h2>
+            <h2 className="text-xl font-bold text-gray-900">
+              Postos Estratégicos Dia {diaAtual}
+            </h2>
+            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+              {postos.length} postos
+            </span>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { nome: 'Posto Saída SP', local: 'São Paulo', km: 0 },
-              { nome: 'BR Itapeva', local: 'Itapeva SP', km: 120 },
-              { nome: 'Petrobras Guarapuava', local: 'Guarapuava PR', km: 190 }
-            ].map((posto, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900">{posto.nome}</h3>
-                <p className="text-sm text-gray-600">📍 {posto.local}</p>
-                <div className="text-sm text-gray-500">KM {posto.km}</div>
-              </div>
-            ))}
-          </div>
+
+          {postos.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {postos.map((posto, index) => (
+                <div 
+                  key={index} 
+                  className={`border rounded-lg p-3 sm:p-4 transition-shadow bg-white ${
+                    posto.isUltimo 
+                      ? 'border-green-300 bg-green-50 hover:shadow-lg' 
+                      : 'border-gray-200 hover:shadow-md'
+                  }`}
+                >
+                  {/* Header com status */}
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-2">
+                    <h3 className="font-semibold text-gray-900 text-base leading-tight">
+                      {posto.nome}
+                    </h3>
+                    <span className={`px-2 py-1 rounded text-xs font-medium self-start shrink-0 ${
+                      posto.isUltimo 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {posto.status}
+                    </span>
+                  </div>
+                  
+                  {/* Localização */}
+                  <p className="text-sm text-gray-600 mb-3">
+                    📍 {posto.local}
+                  </p>
+                  
+                  {/* 🎯 LÓGICA DIFERENCIADA - ÚLTIMO vs INTERMEDIÁRIOS */}
+                  <div className="space-y-2">
+                    {posto.isUltimo ? (
+                      // ÚLTIMO POSTO = DESTINO FINAL
+                      <div className="flex items-center text-sm">
+                        <span className="text-green-600 font-medium">
+                          🏁 Destino final do dia
+                        </span>
+                      </div>
+                    ) : posto.km > 0 ? (
+                      // POSTOS INTERMEDIÁRIOS = DISTÂNCIA ATÉ PRÓXIMO
+                      <div className="flex items-center text-sm">
+                        <span className="text-blue-600 font-medium">
+                          → {posto.km}km até próximo posto
+                        </span>
+                      </div>
+                    ) : (
+                      // PRIMEIRO POSTO = PONTO DE PARTIDA
+                      <div className="flex items-center text-sm">
+                        <span className="text-purple-600 font-medium">
+                          🏁 Ponto de partida
+                        </span>
+                      </div>
+                    )}
+                    
+                    {/* Observações importantes */}
+                    {posto.observacoes && (
+                      <div className={`p-2 rounded text-xs border-l-2 ${
+                        posto.isUltimo 
+                          ? 'bg-green-50 text-green-800 border-green-300'
+                          : 'bg-yellow-50 text-yellow-800 border-yellow-300'
+                      }`}>
+                        💡 {posto.observacoes}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            // 🔧 TRATAMENTO ESPECIAL DIA 5 (SEM POSTOS)
+            <div className="text-center py-8">
+              {diaAtual === 5 ? (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <Hotel className="h-12 w-12 mx-auto mb-3 text-blue-500" />
+                  <h3 className="font-semibold text-blue-900 mb-2">Dia de Descanso em Mendoza</h3>
+                  <p className="text-blue-700 text-sm mb-2">
+                    ☕ Dia livre para turismo e descanso
+                  </p>
+                  <p className="text-blue-600 text-xs">
+                    ⛽ Abastecimento feito no dia anterior
+                  </p>
+                </div>
+              ) : (
+                <div className="text-gray-500">
+                  <Fuel className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                  <p>Nenhum posto definido para o dia {diaAtual}</p>
+                  <p className="text-xs mt-1 text-gray-400">
+                    Verifique dados no Airtable
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
