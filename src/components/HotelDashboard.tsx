@@ -60,16 +60,15 @@ interface AddHotelModalProps {
 
 const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [hotelData, setHotelData] = useState({
-    Dia: 1,
-    hotel: '',
-    cidade: '',
-    'check-in': '',
-    'check-out': '',
-    Preço: 0,
-    Endereço: '',
-    Observação: '',
-    Link: '',
-    Codigo_Reserva: ''
+    Dia: 1,                    // ✅ CAMPO CORRETO
+    Hotel: '',                 // ✅ CAMPO CORRETO
+    Cidade: '',                // ✅ CAMPO CORRETO  
+    'Check-in': '',            // ✅ CAMPO CORRETO (maiúsculo + hífen)
+    'Check-out': '',           // ✅ CAMPO CORRETO (maiúsculo + hífen)
+    Preço: 0,                  // ✅ CAMPO CORRETO (maiúsculo + acento)
+    Observações: '',           // ✅ CAMPO CORRETO (plural)
+    Codigo_Reserva: ''         // ✅ CAMPO CORRETO (underscore)
+    // ❌ REMOVIDO: Link (causava erro no Airtable)
   });
   const [loading, setLoading] = useState(false);
 
@@ -83,14 +82,12 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
       // Reset form
       setHotelData({
         Dia: 1,
-        hotel: '',
-        cidade: '',
-        'check-in': '',
-        'check-out': '',
+        Hotel: '',
+        Cidade: '',
+        'Check-in': '',
+        'Check-out': '',
         Preço: 0,
-        Endereço: '',
-        Observação: '',
-        Link: '',
+        Observações: '',
         Codigo_Reserva: ''
       });
       onClose();
@@ -131,8 +128,8 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
               <input
                 type="text"
                 required
-                value={hotelData.cidade}
-                onChange={(e) => setHotelData(prev => ({ ...prev, cidade: e.target.value }))}
+                value={hotelData.Cidade}
+                onChange={(e) => setHotelData(prev => ({ ...prev, Cidade: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Ex: Mendoza"
               />
@@ -145,8 +142,8 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
             </label>
             <input
               type="text"
-              value={hotelData.hotel}
-              onChange={(e) => setHotelData(prev => ({ ...prev, hotel: e.target.value }))}
+              value={hotelData.Hotel}
+              onChange={(e) => setHotelData(prev => ({ ...prev, Hotel: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ex: Hotel Continental"
             />
@@ -160,8 +157,8 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
               <input
                 type="date"
                 required
-                value={hotelData['check-in']}
-                onChange={(e) => setHotelData(prev => ({ ...prev, 'check-in': e.target.value }))}
+                value={hotelData['Check-in']}
+                onChange={(e) => setHotelData(prev => ({ ...prev, 'Check-in': e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -173,8 +170,8 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
               <input
                 type="date"
                 required
-                value={hotelData['check-out']}
-                onChange={(e) => setHotelData(prev => ({ ...prev, 'check-out': e.target.value }))}
+                value={hotelData['Check-out']}
+                onChange={(e) => setHotelData(prev => ({ ...prev, 'Check-out': e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -208,37 +205,11 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Endereço Completo
-            </label>
-            <input
-              type="text"
-              value={hotelData.Endereço}
-              onChange={(e) => setHotelData(prev => ({ ...prev, Endereço: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Rua San Martin 123, Centro"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Link da Reserva
-            </label>
-            <input
-              type="url"
-              value={hotelData.Link}
-              onChange={(e) => setHotelData(prev => ({ ...prev, Link: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="https://booking.com/..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
               Observações
             </label>
             <textarea
-              value={hotelData.Observação}
-              onChange={(e) => setHotelData(prev => ({ ...prev, Observação: e.target.value }))}
+              value={hotelData.Observações}
+              onChange={(e) => setHotelData(prev => ({ ...prev, Observações: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Café da manhã incluso, próximo das cataratas..."
@@ -310,14 +281,14 @@ const HotelDashboard: React.FC = () => {
   // Calcular próximo check-in - CAMPOS CORRIGIDOS
   const hoje = new Date();
   const proximoHotel = hoteisReservados
-  .filter(hotel => new Date(hotel.fields['Check-in']) >= hoje)
-  .sort((a, b) => new Date(a.fields['Check-in']).getTime() - new Date(b.fields['Check-in']).getTime())[0];
+    .filter(hotel => new Date(hotel.fields['Check-in']) >= hoje)
+    .sort((a, b) => new Date(a.fields['Check-in']).getTime() - new Date(b.fields['Check-in']).getTime())[0];
 
-const diasProximoCheckIn = proximoHotel 
-  ? Math.ceil((new Date(proximoHotel.fields['Check-in']).getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24))
-  : 0;
+  const diasProximoCheckIn = proximoHotel 
+    ? Math.ceil((new Date(proximoHotel.fields['Check-in']).getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
 
-  // Gerar links externos - USANDO CAMPO CIDADE CORRETO
+  // Gerar links externos para hotéis em pesquisa - USANDO CAMPO CIDADE CORRETO
   const generateBookingLink = (cidade?: string) => {
     const baseUrl = "https://www.booking.com/search.html";
     const params = new URLSearchParams({
@@ -382,7 +353,7 @@ const diasProximoCheckIn = proximoHotel
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
-            title="Hotéis Reservados"
+            title="Hotéis Confirmados"
             value={hoteisReservados.length}
             subtitle={`de ${hoteis.length} total`}
             icon={<Hotel className="h-5 w-5 text-green-600" />}
@@ -412,37 +383,9 @@ const diasProximoCheckIn = proximoHotel
           />
         </div>
 
-        {/* Links Externos */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-blue-900 mb-4">
-            🔗 Buscar Hotéis Online (3 motociclistas)
-          </h3>
-          <div className="flex flex-wrap gap-4">
-            <a
-              href={generateBookingLink()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Booking.com
-            </a>
-            <a
-              href={generateAirbnbLink()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Airbnb
-            </a>
-          </div>
-          <p className="text-sm text-blue-700 mt-2">
-            💡 Links configurados para 3 pessoas, quarto triplo/compartilhado
-          </p>
-        </div>
+        {/* ❌ SEÇÃO REMOVIDA: Links Externos Gerais (redundante) */}
 
-        {/* Hotéis Reservados - CAMPOS CORRIGIDOS */}
+        {/* Hotéis Confirmados - CAMPOS CORRIGIDOS */}
         <div className="bg-white shadow rounded-lg mb-8">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-medium text-gray-900">
@@ -461,12 +404,11 @@ const diasProximoCheckIn = proximoHotel
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">
-  {hotel.fields.Hotel || `Hotel em ${hotel.fields.Cidade}`}
-</h4>
-<p className="text-sm text-gray-600 mt-1">
-  🏙️ {hotel.fields.Cidade} • 📅 {hotel.fields['Check-in']} até {hotel.fields['Check-out']}
-</p>
-                        
+                          {hotel.fields.Hotel || `Hotel em ${hotel.fields.Cidade}`}
+                        </h4>
+                        <p className="text-sm text-gray-600 mt-1">
+                          🏙️ {hotel.fields.Cidade} • 📅 {hotel.fields['Check-in']} até {hotel.fields['Check-out']}
+                        </p>
                         {hotel.fields.Codigo_Reserva && (
                           <p className="text-sm text-gray-600">
                             🎫 Código: {hotel.fields.Codigo_Reserva}
@@ -483,17 +425,7 @@ const diasProximoCheckIn = proximoHotel
                           {hotel.fields.Preço ? `R$ ${hotel.fields.Preço.toLocaleString('pt-BR')}` : 'Preço não informado'}
                         </p>
                         <p className="text-sm text-gray-500">por noite</p>
-                        {hotel.fields.Link && (
-                          <a
-                            href={hotel.fields.Link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm mt-2"
-                          >
-                            <ExternalLink className="h-3 w-3 mr-1" />
-                            Ver Reserva
-                          </a>
-                        )}
+                 
                       </div>
                     </div>
                   </div>
@@ -528,6 +460,7 @@ const diasProximoCheckIn = proximoHotel
                           🏙️ {hotel.fields.Cidade} • 📅 {hotel.fields['Check-in']}
                         </p>
                       </div>
+                      {/* ✅ LINKS INDIVIDUAIS MANTIDOS (úteis!) */}
                       <div className="flex space-x-2">
                         <a
                           href={generateBookingLink(hotel.fields.Cidade)}

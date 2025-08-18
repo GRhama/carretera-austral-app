@@ -36,13 +36,13 @@ export interface HotelFields {
   Dia: number;                    // Dia da viagem
   Hotel?: string;                 // Nome do hotel (pode estar vazio!)
   Cidade: string;                 // Cidade do hotel
-  'Check-in': string;             // Data de check-in
-  'Check-out': string;            // Data de check-out  
-  Preço?: number;                 // Preço por noite
+  'Check-in': string;             // Data de check-in (C maiúsculo + hífen)
+  'Check-out': string;            // Data de check-out (C maiúsculo + hífen)
+  Preço?: number;                 // Preço por noite (maiúsculo + acento)
   Status: '✅ Confirmado' | '🔍 Pesquisando';  // Status real
-  Codigo_Reserva?: string;        // Código da reserva  
-  Link?: string;                  // Link da reserva
-  Observações?: string;           // Observações
+  Codigo_Reserva?: string;        // Código da reserva (underscore)
+  Observações?: string;           // Observações (plural)
+  // ❌ REMOVIDO: Link?: string;   // Causava erro INVALID_MULTIPLE_CHOICE_OPTIONS
 }
 
 export type HotelRecord = AirtableRecord<HotelFields>;
