@@ -1,12 +1,14 @@
-// src/App.tsx - CORRIGIDO: Dashboard ao invés de Debug
+// src/App.tsx - ADICIONADA ABA GESTÃO DE HOTÉIS
 import React, { useState } from 'react';
-import { Plus, Calendar, DollarSign, Menu, X } from 'lucide-react';
-import Dashboard from './components/Dashboard'; // ← CORRIGIDO: Dashboard ao invés de DebugDataForcada
+import { Plus, Calendar, DollarSign, Hotel, Menu, X } from 'lucide-react';
+import Dashboard from './components/Dashboard';
+import HotelDashboard from './components/HotelDashboard'; // ← NOVO IMPORT
 import AddGastoForm from './components/AddGastoForm';
 import ConsultaMatinal from './components/ConsultaMatinal';
+import DebugHotelFields from './components/DebugHotelFields'; 
 import './App.css';
 
-type View = 'consulta' | 'gastos';
+type View = 'consulta' | 'gastos' | 'hoteis'; // ← EXPANDIDO COM HOTÉIS
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('consulta');
@@ -18,7 +20,9 @@ function App() {
       case 'consulta':
         return <ConsultaMatinal />;
       case 'gastos':
-        return <Dashboard />; // ← CORRIGIDO: Dashboard ao invés de DebugDataForcada
+        return <Dashboard />;
+      case 'hoteis': // ← FALTAVA O CASE!
+        return <HotelDashboard />; // ← SEM DEBUG
       default:
         return <ConsultaMatinal />;
     }
@@ -67,6 +71,19 @@ function App() {
                 <DollarSign className="h-4 w-4 mr-2" />
                 Gestão Gastos
               </button>
+
+              {/* ← NOVA ABA HOTÉIS */}
+              <button
+                onClick={() => setCurrentView('hoteis')}
+                className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  currentView === 'hoteis'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+              >
+                <Hotel className="h-4 w-4 mr-2" />
+                Gestão de Hotéis
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -112,6 +129,22 @@ function App() {
                 <DollarSign className="h-4 w-4 mr-3" />
                 Gestão Gastos
               </button>
+
+              {/* ← NOVA ABA HOTÉIS MOBILE */}
+              <button
+                onClick={() => {
+                  setCurrentView('hoteis');
+                  setShowMenu(false);
+                }}
+                className={`flex items-center w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  currentView === 'hoteis'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+              >
+                <Hotel className="h-4 w-4 mr-3" />
+                Gestão de Hotéis
+              </button>
             </div>
           </div>
         )}
@@ -133,15 +166,17 @@ function App() {
         </button>
       )}
 
-      {/* Quick Add Button - Aparece em todas as views */}
-      <button
-        onClick={() => setShowAddGasto(true)}
-        className="fixed bottom-6 left-6 bg-green-600 hover:bg-green-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 z-50"
-        aria-label="Adicionar gasto rápido"
-        title="Adicionar Gasto"
-      >
-        <DollarSign className="h-5 w-5" />
-      </button>
+      {/* Quick Add Button - Aparece em todas as views EXCETO hotéis (que tem seu próprio botão) */}
+      {currentView !== 'hoteis' && (
+        <button
+          onClick={() => setShowAddGasto(true)}
+          className="fixed bottom-6 left-6 bg-green-600 hover:bg-green-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 z-50"
+          aria-label="Adicionar gasto rápido"
+          title="Adicionar Gasto"
+        >
+          <DollarSign className="h-5 w-5" />
+        </button>
+      )}
 
       {/* Add Gasto Form Modal */}
       <AddGastoForm 
@@ -152,7 +187,7 @@ function App() {
       {/* Version Info - Development Only */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-30">
         <div className="bg-gray-800 text-white px-3 py-1 rounded-full text-xs opacity-70">
-          MVP v1.0 • {new Date().toLocaleDateString('pt-BR')}
+          MVP v1.2 • {new Date().toLocaleDateString('pt-BR')} • Hotéis ✅
         </div>
       </div>
     </div>

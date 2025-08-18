@@ -33,15 +33,16 @@ export type RoteiroRecord = AirtableRecord<RoteiroFields>;
 
 // Hotéis Table
 export interface HotelFields {
-  Hotel: string; // Nome do hotel
-  Data: string; // Data de check-in 
-  'Check-out': string; // Data de check-out
-  Preço: number;
-  Status: '✅ Reservado' | '🟡 Pesquisando';
-  Confirmação?: string;
-  Link?: string;
-  Endereço?: string;
-  Observação?: string;
+  Dia: number;                    // Dia da viagem
+  Hotel?: string;                 // Nome do hotel (pode estar vazio!)
+  Cidade: string;                 // Cidade do hotel
+  'Check-in': string;             // Data de check-in
+  'Check-out': string;            // Data de check-out  
+  Preço?: number;                 // Preço por noite
+  Status: '✅ Confirmado' | '🔍 Pesquisando';  // Status real
+  Codigo_Reserva?: string;        // Código da reserva  
+  Link?: string;                  // Link da reserva
+  Observações?: string;           // Observações
 }
 
 export type HotelRecord = AirtableRecord<HotelFields>;
