@@ -35,6 +35,7 @@ export type RoteiroRecord = AirtableRecord<RoteiroFields>;
 export interface HotelFields {
   Dia: number;                    // Dia da viagem
   Hotel?: string;                 // Nome do hotel (pode estar vazio!)
+  Endereco?: string;
   Cidade: string;                 // Cidade do hotel
   'Check-in': string;             // Data de check-in (C maiúsculo + hífen)
   'Check-out': string;            // Data de check-out (C maiúsculo + hífen)

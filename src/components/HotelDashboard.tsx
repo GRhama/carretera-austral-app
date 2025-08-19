@@ -62,7 +62,8 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
   const [hotelData, setHotelData] = useState({
     Dia: 1,                    // ✅ CAMPO CORRETO
     Hotel: '',                 // ✅ CAMPO CORRETO
-    Cidade: '',                // ✅ CAMPO CORRETO  
+    Cidade: '',                // ✅ CAMPO CORRETO
+    Endereco: '',              // ✅ CAMPO CORRETO  
     'Check-in': '',            // ✅ CAMPO CORRETO (maiúsculo + hífen)
     'Check-out': '',           // ✅ CAMPO CORRETO (maiúsculo + hífen)
     Preço: 0,                  // ✅ CAMPO CORRETO (maiúsculo + acento)
@@ -84,6 +85,7 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
         Dia: 1,
         Hotel: '',
         Cidade: '',
+        Endereco: '',
         'Check-in': '',
         'Check-out': '',
         Preço: 0,
@@ -148,6 +150,33 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
               placeholder="Ex: Hotel Continental"
             />
           </div>
+          <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Endereco Completo *
+  </label>
+  <input
+    type="text"
+    required
+    value={hotelData.Endereco}
+    onChange={(e) => setHotelData(prev => ({ ...prev, Endereco: e.target.value }))}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    placeholder="José Federico Moreno 1570, Mendoza, Argentina"
+  />
+</div>
+
+<div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Endereco Completo *
+            </label>
+            <input
+              type="text"
+              required
+              value={hotelData.Endereco}
+              onChange={(e) => setHotelData(prev => ({ ...prev, Endereco: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="José Federico Moreno 1570, Mendoza, Argentina"
+            />
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -200,6 +229,19 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSubmit
               onChange={(e) => setHotelData(prev => ({ ...prev, Codigo_Reserva: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ex: 6767364046"
+            />
+          </div>
+           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Endereço Completo *
+            </label>
+            <input
+              type="text"
+              required
+              value={hotelData.Endereco}
+              onChange={(e) => setHotelData(prev => ({ ...prev, Endereco: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="José Federico Moreno 1570, Mendoza, Argentina"
             />
           </div>
 
@@ -406,12 +448,18 @@ const HotelDashboard: React.FC = () => {
                         <h4 className="font-semibold text-gray-900">
                           {hotel.fields.Hotel || `Hotel em ${hotel.fields.Cidade}`}
                         </h4>
+                        
                         <p className="text-sm text-gray-600 mt-1">
                           🏙️ {hotel.fields.Cidade} • 📅 {hotel.fields['Check-in']} até {hotel.fields['Check-out']}
                         </p>
                         {hotel.fields.Codigo_Reserva && (
                           <p className="text-sm text-gray-600">
                             🎫 Código: {hotel.fields.Codigo_Reserva}
+                          </p>
+                        )}
+                        {hotel.fields.Endereco && (
+                          <p className="text-sm text-gray-600">
+                            📍 {hotel.fields.Endereco}
                           </p>
                         )}
                         {hotel.fields.Observações && (
@@ -497,5 +545,7 @@ const HotelDashboard: React.FC = () => {
     </div>
   );
 };
+
+
 
 export default HotelDashboard;
