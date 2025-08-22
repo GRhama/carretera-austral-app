@@ -1,5 +1,5 @@
-// src/components/ConsultaMatinal.tsx - LÓGICA COMPLETA VALIDADA
-import React, { useState, useEffect } from 'react';
+// src/components/ConsultaMatinal.tsx - LÓGICA COMPLETA VALIDADA + HOTEL INTEGRATION
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Calendar, MapPin, Hotel, Fuel, DollarSign, AlertTriangle } from 'lucide-react';
 import { tables, validateConfig } from '../config/airtable';
 
@@ -29,6 +29,18 @@ interface PostoData {
   isUltimo: boolean;   // Flag para identificar destino final
 }
 
+// 🏨 NOVA INTERFACE HOTEL
+interface HotelData {
+  nome: string;
+  cidade: string;
+  endereco?: string;
+  checkin: string;
+  checkout: string;
+  status: string;
+  codigoReserva?: string;
+  observacoes?: string;
+}
+
 // Mapeamento de distâncias
 const DISTANCIAS: Record<string, number> = {
   "São Paulo → Guarapuava": 460,
@@ -49,9 +61,10 @@ const ConsultaMatinal: React.FC = () => {
     kmPercorridos: 0,
     kmTotal: 10385
   });
+  const [hotel, setHotel] = useState<HotelData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const extrairKilometragem = (trecho: string): string => {
     if (!trecho) return 'N/A';
     const distancia = DISTANCIAS[trecho.trim()];
@@ -78,22 +91,24 @@ const ConsultaMatinal: React.FC = () => {
     }
   };
 
-  const carregarDados = async (dia: number = diaAtual) => {
-    if (!validateConfig()) {
-      setError('Configuração do Airtable inválida');
-      setLoading(false);
-      return;
-    }
+  const carregarDados = useCallback(async (dia?: number) => {
+  const diaParaCarregar = dia || diaAtual;
+  
+  if (!validateConfig()) {
+    setError('Configuração do Airtable inválida');
+    setLoading(false);
+    return;
+  }
 
     try {
       setLoading(true);
       setError(null);
 
-      const dataCalculada = calcularDataViagem(dia);
+      const dataCalculada = calcularDataViagem(diaParaCarregar);
       
       // Buscar roteiro
       const resultadoRoteiro = await tables.roteiro().select({
-        filterByFormula: `{Dia} = ${dia}`,
+        filterByFormula: `{Dia} = ${diaParaCarregar}`,
         maxRecords: 1
       }).firstPage();
 
@@ -137,12 +152,35 @@ const ConsultaMatinal: React.FC = () => {
 
       setPostos(postosProcessados);
 
-      const kmPercorridosCalculado = dia > 1 ? (dia - 1) * 520 : 0;
+      // 🏨 BUSCAR HOTEL DO DIA
+      const resultadoHotel = await tables.hoteis().select({
+        filterByFormula: `{Dia} = ${dia}`,
+        maxRecords: 1
+      }).firstPage().catch(() => []);
+
+      if (resultadoHotel.length > 0) {
+        const hotelEncontrado = resultadoHotel[0];
+        const dadosHotel: HotelData = {
+          nome: String(hotelEncontrado.fields.Hotel || `Hotel em ${hotelEncontrado.fields.Cidade}`),
+          cidade: String(hotelEncontrado.fields.Cidade || ''),
+          endereco: hotelEncontrado.fields.Endereco ? String(hotelEncontrado.fields.Endereco) : undefined,
+          checkin: String(hotelEncontrado.fields['Check-in'] || dataCalculada),
+          checkout: String(hotelEncontrado.fields['Check-out'] || dataCalculada),
+          status: String(hotelEncontrado.fields.Status || '🔍 Pesquisando'),
+          codigoReserva: hotelEncontrado.fields.Codigo_Reserva ? String(hotelEncontrado.fields.Codigo_Reserva) : undefined,
+          observacoes: hotelEncontrado.fields.Observações ? String(hotelEncontrado.fields.Observações) : undefined
+        };
+        setHotel(dadosHotel);
+      } else {
+        setHotel(null);
+      }
+
+      const kmPercorridosCalculado = diaParaCarregar > 1 ? (diaParaCarregar - 1) * 520 : 0;
       const percentualCalculado = (kmPercorridosCalculado / 10385) * 100;
 
       setProgresso(prev => ({
         ...prev,
-        diaAtual: dia,
+        diaAtual: diaParaCarregar,
         percentualConcluido: percentualCalculado,
         kmPercorridos: kmPercorridosCalculado
       }));
@@ -153,7 +191,7 @@ const ConsultaMatinal: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [diaAtual]);
 
   const irParaDiaAnterior = () => {
     if (diaAtual > 1) {
@@ -181,6 +219,21 @@ const ConsultaMatinal: React.FC = () => {
   useEffect(() => {
     carregarDados(diaAtual);
   }, []);
+
+  // 🗺️ FUNÇÕES DE NAVEGAÇÃO
+  const generateGoogleMapsLink = (hotel: HotelData): string => {
+    if (hotel.endereco) {
+      return `https://www.google.com/maps/search/${encodeURIComponent(hotel.endereco + ', ' + hotel.cidade)}`;
+    }
+    return `https://www.google.com/maps/search/${encodeURIComponent(hotel.nome + ' ' + hotel.cidade)}`;
+  };
+
+  const generateWazeLink = (hotel: HotelData): string => {
+    if (hotel.endereco) {
+      return `https://waze.com/ul?q=${encodeURIComponent(hotel.endereco + ', ' + hotel.cidade)}`;
+    }
+    return `https://waze.com/ul?q=${encodeURIComponent(hotel.nome + ' ' + hotel.cidade)}`;
+  };
 
   if (loading) {
     return (
@@ -375,12 +428,80 @@ const ConsultaMatinal: React.FC = () => {
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-4">
               <Hotel className="h-6 w-6 text-blue-600 mr-2" />
-              <h2 className="text-xl font-bold text-gray-900">Hotel</h2>
+              <h2 className="text-xl font-bold text-gray-900">Hotel do Dia {diaAtual}</h2>
             </div>
-            <div className="text-center py-8 text-gray-500">
-              <Hotel className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-              <p>Hotel não definido para este dia</p>
-            </div>
+
+            {hotel ? (
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">{hotel.nome}</h3>
+                  <p className="text-gray-600">🏙️ {hotel.cidade}</p>
+                </div>
+
+                {hotel.endereco && (
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-sm text-gray-600">Endereço</div>
+                    <div className="font-medium">📍 {hotel.endereco}</div>
+                  </div>
+                )}
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-sm text-gray-600">Check-in</div>
+                    <div className="font-medium">📅 {formatarDataBrasil(hotel.checkin)}</div>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-sm text-gray-600">Status</div>
+                    <span className={`px-2 py-1 rounded-full text-sm font-medium ${
+                      hotel.status.includes('Confirmado') 
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-orange-100 text-orange-800'
+                    }`}>
+                      {hotel.status}
+                    </span>
+                  </div>
+                </div>
+
+                {hotel.codigoReserva && (
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="text-sm text-blue-600">Código da Reserva</div>
+                    <div className="font-mono font-medium">🎫 {hotel.codigoReserva}</div>
+                  </div>
+                )}
+
+                <div className="flex space-x-3">
+                  <button 
+                    onClick={() => window.open(generateGoogleMapsLink(hotel), '_blank')}
+                    className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
+                  >
+                    🗺️ Google Maps
+                  </button>
+                  <button 
+                    onClick={() => window.open(generateWazeLink(hotel), '_blank')}
+                    className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors flex items-center justify-center"
+                  >
+                    📍 Waze
+                  </button>
+                </div>
+
+                {hotel.observacoes && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                    <div className="text-sm text-yellow-800">💬 {hotel.observacoes}</div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <Hotel className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                <p>Hotel não definido para o dia {diaAtual}</p>
+                <button 
+                  onClick={() => carregarDados(diaAtual)}
+                  className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
+                >
+                  Tentar recarregar
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
