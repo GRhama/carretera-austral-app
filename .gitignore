@@ -1,0 +1,33 @@
+# Build outputs
+dist/
+build/
+
+# Dependencies  
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache & Logs
+.cache/
+*.log
+npm-debug.log*
+
+# Scripts temporários
+deploy-script*.sh
+
+# Knowledge base (opcional)
+knowledge/
+
+# Testing
+coverage/
+.nyc_output/
