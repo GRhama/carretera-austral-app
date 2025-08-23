@@ -41,6 +41,245 @@ interface HotelData {
   observacoes?: string;
 }
 
+// ✅ DADOS HARDCODED - NAVEGAÇÃO PRÉ-DETERMINADA
+const NAVEGACAO_PREDETERMINADA = {
+  6: {
+    titulo: "Mendoza → Curicó",
+    subtitulo: "Via Caracoles - Cordilheira dos Andes",
+    critico: true,
+    distancia: "555km",
+    tempo_estimado: "8h",
+    
+    aviso_principal: "Google Maps pode sugerir rota rápida via Buenos Aires. Use os waypoints para garantir experiência cinematográfica dos Andes.",
+    
+    rota_correta: [
+      {
+        passo: 1,
+        descricao: "Mendoza → Potrerillos (dique azul turquesa)",
+        emoji: "📍"
+      },
+      {
+        passo: 2, 
+        descricao: "Potrerillos → Uspallata (vista Aconcagua)",
+        emoji: "🏔️"
+      },
+      {
+        passo: 3,
+        descricao: "Uspallata → Caracoles (cenário cinematográfico)",
+        emoji: "🛣️"
+      },
+      {
+        passo: 4,
+        descricao: "Chile → Curicó (vinícolas)",
+        emoji: "🇨🇱"
+      }
+    ],
+    
+    waypoints_url: "https://www.google.com/maps/dir/-32.889,-68.845/-32.594687,-69.371063/-32.907688,-70.293688/-34.986,-71.233",
+    
+    instrucoes_manuais: [
+      "1. Sair de Mendoza pela RP82",
+      "2. Parar em Potrerillos (dique azul) - foto obrigatória!",
+      "3. Continuar para Uspallata - vista do Aconcagua", 
+      "4. Seguir RN7 pelos Caracoles (cenário cinematográfico)",
+      "5. Cruzar fronteira Los Libertadores",
+      "6. Parar COPEC Rio Blanco (primeiro posto Chile)",
+      "7. Seguir R60 + R57 até Curicó",
+      "",
+      "⚠️ NUNCA seguir sugestão 'via Buenos Aires'",
+      "🕐 Tempo estimado: 8h (se menos de 7h = rota errada!)"
+    ],
+    
+    evitar_rotas: [
+      "Rota via Buenos Aires (400km, 6h) - rápida mas SEM cenário cinematográfico",
+      "Desvio por outros pasos - perde vista do Aconcagua", 
+      "Tempo < 7h - significa que não está passando pelos Caracoles"
+    ],
+    
+    coordenadas_backup: {
+      "YPF Potrerillos (último posto Argentina)": "-32.594687,-69.371063",
+      "COPEC Rio Blanco (primeiro posto Chile)": "-32.907688,-70.293688"
+    }
+  },
+
+  7: {
+    titulo: "Puerto Montt → Hornopirén",
+    subtitulo: "Início Carretera Austral + Balsas",
+    critico: true,
+    distancia: "120km",
+    tempo_estimado: "4h",
+    
+    aviso_principal: "Google Maps pode sugerir rota direta. É obrigatório usar as balsas para chegar ao KM 0 da Carretera Austral.",
+    
+    rota_correta: [
+      {
+        passo: 1,
+        descricao: "Puerto Montt → Puelche (balsa)",
+        emoji: "🚢"
+      },
+      {
+        passo: 2, 
+        descricao: "Balsa Puelche → Caleta La Arena (30min)",
+        emoji: "⛴️"
+      },
+      {
+        passo: 3,
+        descricao: "Caleta La Arena → KM 0 Carretera Austral",
+        emoji: "🛣️"
+      },
+      {
+        passo: 4,
+        descricao: "KM 0 → Hornopirén (fim do dia)",
+        emoji: "🏨"
+      }
+    ],
+    
+    waypoints_url: "https://www.google.com/maps/dir/Puerto+Montt+Chile/Puelche+Ferry+Terminal/Caleta+La+Arena/Hornopiren+Chile",
+    
+    instrucoes_manuais: [
+      "1. Sair de Puerto Montt sentido Puelche",
+      "2. Terminal Ferry Puelche - balsa 30min para Caleta La Arena", 
+      "3. IMPORTANTE: Verificar horários das balsas!",
+      "4. Caleta La Arena → KM 0 Carretera Austral (placa oficial)",
+      "5. KM 0 → Hornopirén (50km pela RN 7)",
+      "",
+      "⚠️ Horários balsas: Verificar na chegada",
+      "🕐 Última balsa: Geralmente 18:00h"
+    ],
+    
+    evitar_rotas: [
+      "Rota terrestre direta - NÃO EXISTE conexão direta",
+      "Pular as balsas - IMPOSSÍVEL chegar sem elas",
+      "Não verificar horários - risco de perder última balsa"
+    ],
+    
+    coordenadas_backup: {
+      "Terminal Ferry Puelche": "-41.628611,-72.968333",
+      "Caleta La Arena": "-41.875833,-72.683333",
+      "KM 0 Carretera Austral": "-41.926111,-72.645833"
+    }
+  },
+
+  8: {
+    titulo: "Hornopirén → Chaitén", 
+    subtitulo: "Balsas obrigatórias - horários críticos",
+    critico: true,
+    distancia: "58km + 2 balsas",
+    tempo_estimado: "6h",
+    
+    aviso_principal: "DIA MAIS CRÍTICO DA VIAGEM! São 2 balsas obrigatórias com horários fixos. Perder horário = perder o dia inteiro.",
+    
+    rota_correta: [
+      {
+        passo: 1,
+        descricao: "Hornopirén → Leptepu (balsa 1 - 2.5h)",
+        emoji: "🚢"
+      },
+      {
+        passo: 2, 
+        descricao: "Leptepu → Fiordo Largo (30km terra)",
+        emoji: "🛣️"
+      },
+      {
+        passo: 3,
+        descricao: "Fiordo Largo → Caleta Gonzalo (balsa 2 - 1h)",
+        emoji: "⛴️"
+      },
+      {
+        passo: 4,
+        descricao: "Caleta Gonzalo → Chaitén (28km)",
+        emoji: "🏨"
+      }
+    ],
+    
+    waypoints_url: "https://www.google.com/maps/dir/Hornopiren+Chile/Leptepu+Chile/Fiordo+Largo+Chile/Caleta+Gonzalo+Chile/Chaiten+Chile",
+    
+    instrucoes_manuais: [
+      "1. ACORDAR CEDO! Primeira balsa saindo 10:00h",
+      "2. Hornopirén → Terminal Leptepu (embarque 09:30h)",
+      "3. Balsa Leptepu → Fiordo Largo (2h30 navegação)", 
+      "4. Fiordo Largo → Terminal Caleta Gonzalo (30km)",
+      "5. Segunda balsa → Caleta Gonzalo (1h)",
+      "6. Caleta Gonzalo → Chaitén (28km finais)",
+      "",
+      "🚨 CRÍTICO: Primeira balsa 10:00h - NÃO ATRASAR!",
+      "🕐 Se perder = esperar dia seguinte"
+    ],
+    
+    evitar_rotas: [
+      "Tentar ir sem as balsas - IMPOSSÍVEL, não há estrada",
+      "Chegar atrasado no terminal - balsas são pontuais",
+      "Não confirmar horários - podem variar por clima/maré"
+    ],
+    
+    coordenadas_backup: {
+      "Terminal Leptepu": "-42.383333,-72.633333",
+      "Terminal Fiordo Largo": "-42.450000,-72.766667",
+      "Terminal Caleta Gonzalo": "-42.516667,-72.716667"
+    }
+  },
+
+  13: {
+    titulo: "Villa La Angostura → Neuquén",
+    subtitulo: "Ruta de los 7 Lagos",
+    critico: true,
+    distancia: "385km",
+    tempo_estimado: "6h",
+    
+    aviso_principal: "Google Maps pode sugerir rota direta pela RN40. Use a rota dos 7 Lagos para experiência panorâmica única.",
+    
+    rota_correta: [
+      {
+        passo: 1,
+        descricao: "Villa La Angostura → Lago Espejo",
+        emoji: "🏔️"
+      },
+      {
+        passo: 2, 
+        descricao: "Lagos Correntoso → Escondido → Villarino",
+        emoji: "💧"
+      },
+      {
+        passo: 3,
+        descricao: "Lagos Falkner → Machonico → Lácar",
+        emoji: "🌊"
+      },
+      {
+        passo: 4,
+        descricao: "San Martín de los Andes → Neuquén",
+        emoji: "🏙️"
+      }
+    ],
+    
+    waypoints_url: "https://www.google.com/maps/dir/Villa+La+Angostura+Argentina/Lago+Espejo+Argentina/San+Martin+de+los+Andes+Argentina/Neuquen+Argentina",
+    
+    instrucoes_manuais: [
+      "1. Villa La Angostura → RP 65 sentido Lago Espejo",
+      "2. Parar em cada mirador dos 7 lagos - fotos obrigatórias!", 
+      "3. Lagos: Espejo, Correntoso, Escondido, Villarino, Falkner, Machonico, Lácar",
+      "4. San Martín de los Andes - parada para almoço",
+      "5. San Martín → RN 40 → Neuquén capital",
+      "",
+      "📸 DICA: Cada lago tem visual único - não pular miradores",
+      "🕐 Tempo estimado: 6h com paradas"
+    ],
+    
+    evitar_rotas: [
+      "Rota direta RN40 - perde os lagos panorâmicos",
+      "Pular miradores - desperdiça cenário único da região", 
+      "Pressa excessiva - paisagem merece contemplação"
+    ],
+    
+    coordenadas_backup: {
+      "Mirador Lago Espejo": "-40.772222,-71.622222",
+      "San Martín de los Andes": "-40.157778,-71.353333",
+      "Entrada Neuquén": "-38.951111,-68.059167"
+    }
+  }
+  
+  // Outros dias = null (não aparecem)
+};
+
 // Mapeamento de distâncias
 const DISTANCIAS: Record<string, number> = {
   "São Paulo → Guarapuava": 460,
@@ -65,6 +304,124 @@ const ConsultaMatinal: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // ✅ FUNÇÃO DE RENDERIZAÇÃO - NAVEGAÇÃO PRÉ-DETERMINADA
+  const renderNavegacaoPredeterminada = (dia: number): React.ReactNode => {
+    const dados = NAVEGACAO_PREDETERMINADA[dia as keyof typeof NAVEGACAO_PREDETERMINADA];
+    
+    if (!dados) return null; // Não aparece em dias não críticos
+    
+    return (
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8" style={{borderLeft: '4px solid #ea580c'}}>
+        
+        {/* HEADER */}
+        <div className="flex items-center mb-4">
+          <MapPin className="h-6 w-6 text-blue-600 mr-2" />
+          <h2 className="text-xl font-bold text-gray-900">
+            🗺️ Navegação Pré-determinada - Dia {dia}
+          </h2>
+          <span className="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-sm rounded-full font-medium">
+            Rota obrigatória
+          </span>
+        </div>
+
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-800">{dados.titulo}</h3>
+          <p className="text-gray-600">{dados.subtitulo}</p>
+        </div>
+
+        {/* AVISO CRÍTICO */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start">
+            <AlertTriangle className="h-5 w-5 text-amber-600 mr-2 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-amber-900">⚠️ ATENÇÃO: Rota Cinematográfica</h3>
+              <p className="text-amber-700 text-sm mt-1">{dados.aviso_principal}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ROTA CORRETA */}
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <h4 className="font-semibold text-green-900 mb-3 flex items-center">
+            ✅ Rota Cinematográfica Correta ({dados.distancia}, ~{dados.tempo_estimado})
+          </h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            {dados.rota_correta.map(passo => (
+              <div key={passo.passo} className="flex items-center">
+                <span className="w-6 h-6 bg-green-600 text-white rounded-full text-xs flex items-center justify-center mr-2">
+                  {passo.passo}
+                </span>
+                {passo.emoji} {passo.descricao}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* BOTÕES DE AÇÃO */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <button 
+            onClick={() => window.open(dados.waypoints_url, '_blank')}
+            className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center font-medium"
+          >
+            🗺️ Rota Waypoints
+          </button>
+          <button 
+            onClick={() => mostrarInstrucoes(dados.instrucoes_manuais)}
+            className="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center font-medium"
+          >
+            📋 Instruções GPS
+          </button>
+          <button 
+            onClick={() => copiarCoordenadas(dados.coordenadas_backup)}
+            className="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center font-medium"
+          >
+            📍 Copiar Coords
+          </button>
+        </div>
+
+        {/* AVISO ROTAS ERRADAS */}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <h4 className="font-semibold text-red-900 mb-2">❌ NÃO usar se Google sugerir:</h4>
+          <div className="text-sm text-red-800 space-y-1">
+            {dados.evitar_rotas.map((rota, index) => (
+              <div key={index}>• {rota}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* BACKUP COORDENADAS */}
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h4 className="font-semibold text-gray-900 mb-2">🔄 Backup - Coordenadas Emergência</h4>
+          <div className="text-sm text-gray-700 space-y-1">
+            {Object.entries(dados.coordenadas_backup).map(([nome, coord]) => (
+              <div key={nome}>
+                {nome}: <code className="bg-gray-200 px-2 py-1 rounded font-mono text-xs">{coord}</code>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+      </div>
+    );
+  };
+
+  // Funções auxiliares para navegação
+  const mostrarInstrucoes = (instrucoes: string[]) => {
+    alert(instrucoes.join('\n'));
+  };
+
+  const copiarCoordenadas = (coordenadas: Record<string, string>) => {
+    const texto = Object.entries(coordenadas)
+      .map(([nome, coord]) => `${nome}: ${coord}`)
+      .join('\n');
+      
+    navigator.clipboard.writeText(texto).then(() => {
+      // Toast notification simples
+      alert('Coordenadas copiadas para clipboard!');
+    });
+  };
+
   const extrairKilometragem = (trecho: string): string => {
     if (!trecho) return 'N/A';
     const distancia = DISTANCIAS[trecho.trim()];
@@ -367,6 +724,9 @@ const ConsultaMatinal: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* ✅ NAVEGAÇÃO PRÉ-DETERMINADA - INSERIDA AQUI */}
+        {renderNavegacaoPredeterminada(diaAtual)}
 
         <div className="grid lg:grid-cols-2 gap-8">
           <div className="bg-white rounded-xl shadow-lg p-6">
