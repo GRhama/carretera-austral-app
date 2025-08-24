@@ -26,8 +26,10 @@ npm-debug.log*
 deploy-script*.sh
 
 # Knowledge base (opcional)
-knowledge/
+# knowledge/
 
 # Testing
 coverage/
 .nyc_output/
+!knowledge/v*.*.*/
+!knowledge/v*.*.*/*.md
