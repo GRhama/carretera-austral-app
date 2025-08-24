@@ -41,9 +41,146 @@ interface HotelData {
   observacoes?: string;
 }
 
-// ✅ DADOS HARDCODED - NAVEGAÇÃO PRÉ-DETERMINADA
+// ✅ DADOS HARDCODED - NAVEGAÇÃO PRÉ-DETERMINADA (ANÁLISE COMPLETA APLICADA)
+// 🎯 DIAS CRÍTICOS IMPLEMENTADOS: 6 de 20 (30% do roteiro)
+// Dia 3: Posadas → Santa Fe (coordenadas postos específicas)
+// Dia 4: Santa Fe → Mendoza via P.N. Quebrada del Condorito (rota cinematográfica)
+// Dia 6: Mendoza → Curicó via Caracoles (vs Buenos Aires)
+// Dia 8: Osorno → Hornopirén via Puerto Montt (KM 0 Carretera Austral - marco obrigatório)
+// Dia 9: Hornopirén → Chaitén (2 balsas obrigatórias - MAIS CRÍTICO)
+// Dia 14: Villa La Angostura → Neuquén (7 Lagos vs rota direta)
 const NAVEGACAO_PREDETERMINADA = {
-  6: {
+  3: {
+    titulo: "Posadas → Santa Fe",
+    subtitulo: "Atravessando o interior argentino",
+    critico: true,
+    distancia: "780km",
+    tempo_estimado: "10h",
+    
+    aviso_principal: "Trecho longo pelo interior argentino. Use as coordenadas específicas dos postos para garantir abastecimento nos pontos exatos planejados.",
+    
+    rota_correta: [
+      {
+        passo: 1,
+        descricao: "Posadas → AXION Entre Rios (238km)",
+        emoji: "☕"
+      },
+      {
+        passo: 2, 
+        descricao: "AXION → YPF Centro Argentina (236km)",
+        emoji: "⛽"
+      },
+      {
+        passo: 3,
+        descricao: "YPF → Aproximação Santa Fe (219km)",
+        emoji: "🛣️"
+      },
+      {
+        passo: 4,
+        descricao: "Chegada Santa Fe → POIs turísticos",
+        emoji: "🏛️"
+      }
+    ],
+    
+    waypoints_url: "https://www.google.com/maps/dir/Posadas+Argentina/-29.086062,-56.560813/-30.340562,-58.311563/-31.567437,-59.959937/Santa+Fe+Argentina",
+    
+    instrucoes_manuais: [
+      "1. Posadas → RN14 sentido AXION Entre Rios",
+      "2. 9:00am - Café da manhã em AXION (coordenada GPS exata)",
+      "3. Continuar RN127 → primeiro YPF (meio do trajeto)", 
+      "4. 12:00pm - Abastecimento no YPF centro Argentina",
+      "5. RN127 → segundo YPF (aproximação Santa Fe)",
+      "6. 2:30pm - Último abastecimento antes Santa Fe",
+      "7. RN12+RN168 → chegada Santa Fe centro",
+      "8. POIs: Puente Colgante, Plaza 25 de Mayo, Basílica",
+      "",
+      "📍 GPS obrigatório: coordenadas específicas dos postos",
+      "🕐 Tempo estimado: 10h com paradas estratégicas"
+    ],
+    
+    evitar_rotas: [
+      "Pular postos intermediários - trecho muito longo sem abastecimento",
+      "Usar postos genéricos - coordenadas específicas são obrigatórias",
+      "Pressa excessiva - 780km exigem paradas estratégicas"
+    ],
+    
+    coordenadas_backup: {
+      "AXION Entre Rios (café manhã)": "-29.086062,-56.560813",
+      "YPF Centro Argentina (meio trajeto)": "-30.340562,-58.311563",
+      "YPF Santa Fe (final)": "-31.567437,-59.959937"
+    }
+  },
+
+  4: {
+    titulo: "Santa Fe → Mendoza via P.N. Quebrada del Condorito",
+    subtitulo: "🏔️ ROTA CINEMATOGRÁFICA MONTANHOSA - RP34",
+    critico: true,
+    distancia: "980km",
+    tempo_estimado: "12h",
+    
+    aviso_principal: "🚨 ROTA CINEMATOGRÁFICA OBRIGATÓRIA! Google Maps sugere rota direta Santa Fe-Mendoza. OBRIGATÓRIO usar RP34 para passar pelo Parque Nacional Quebrada del Condorito - ÚNICA paisagem montanhosa da viagem!",
+    
+    rota_correta: [
+      {
+        passo: 1,
+        descricao: "Santa Fe → YPF Arroyito (247km)",
+        emoji: "☕"
+      },
+      {
+        passo: 2, 
+        descricao: "Arroyito → Córdoba Centro (122km)",
+        emoji: "🍽️"
+      },
+      {
+        passo: 3,
+        descricao: "🏔️ Córdoba → RP34 P.N. Quebrada del Condorito",
+        emoji: "🎬"
+      },
+      {
+        passo: 4,
+        descricao: "⛰️ RP34 → Paisagem montanhosa (muitas curvas!)",
+        emoji: "📸"
+      },
+      {
+        passo: 5,
+        descricao: "Montanhas → Val-Ver SRL → Mendoza",
+        emoji: "🍷"
+      }
+    ],
+    
+    waypoints_url: "https://www.google.com/maps/dir/Santa+Fe+Argentina/-31.424062,-63.052563/Cordoba+Argentina/-31.950688,-65.156437/-32.218312,-67.792063/Mendoza+Argentina",
+    
+    instrucoes_manuais: [
+      "1. Santa Fe → RN19 sentido YPF Arroyito",
+      "2. 9:30am - Café da manhã Arroyito (coord. GPS exata)",
+      "3. RN19 → Córdoba Centro (almoço 11:00am)",
+      "4. 🚨 CRÍTICO: Córdoba → RP34 (NÃO pegar rota direta!)",
+      "5. 🎬 RP34 → Parque Nacional Quebrada del Condorito", 
+      "6. ⛰️ CENÁRIO ÚNICO: Muitas curvas, paisagem montanhosa",
+      "7. 📸 DAPSA Villa Mercedes (entrada das montanhas)",
+      "8. RP34 → RN20 → posto Val-Ver SRL (pós-montanhas)",
+      "9. RN142 → chegada Mendoza (6:30pm)",
+      "",
+      "⚠️ NUNCA seguir rota direta Santa Fe-Mendoza",
+      "🏔️ RP34 = ÚNICA rota cinematográfica montanhosa da viagem",
+      "🕐 Tempo: 12h (se < 10h = perdeu Parque Nacional)"
+    ],
+    
+    evitar_rotas: [
+      "Rota direta RN19 completa - perde Parque Nacional Quebrada del Condorito",
+      "Pular RP34 - perde ÚNICA paisagem montanhosa de toda a viagem",
+      "RN20 direto de Córdoba - evita curvas cinematográficas",
+      "Tempo < 10h - significa rota direta sem montanhas"
+    ],
+    
+    coordenadas_backup: {
+      "YPF Arroyito (café manhã)": "-31.424062,-63.052563",
+      "DAPSA Villa Mercedes (entrada montanhas)": "-31.950688,-65.156437",  
+      "Val-Ver SRL (pós-montanhas)": "-32.218312,-67.792063"
+    }
+  },
+
+  6: {  // ✅ CORRIGIDO: era 7, agora é 6
     titulo: "Mendoza → Curicó",
     subtitulo: "Via Caracoles - Cordilheira dos Andes",
     critico: true,
@@ -102,92 +239,97 @@ const NAVEGACAO_PREDETERMINADA = {
     }
   },
 
-  7: {
-    titulo: "Puerto Montt → Hornopirén",
-    subtitulo: "Início Carretera Austral + Balsas",
+  8: {  // ✅ NOVO: Osorno → Hornopirén via Puerto Montt (KM 0 Carretera Austral)
+    titulo: "Osorno → Hornopirén via Puerto Montt",
+    subtitulo: "🛣️ KM 0 CARRETERA AUSTRAL - Marco obrigatório",
     critico: true,
-    distancia: "120km",
+    distancia: "208km",
     tempo_estimado: "4h",
     
-    aviso_principal: "Google Maps pode sugerir rota direta. É obrigatório usar as balsas para chegar ao KM 0 da Carretera Austral.",
+    aviso_principal: "🎯 MARCO IMPERDÍVEL! Google Maps pode sugerir rota direta Osorno→Hornopirén. É OBRIGATÓRIO passar por Puerto Montt para ver a placa KM 0 oficial da Carretera Austral - início da estrada mais famosa do Chile.",
     
     rota_correta: [
       {
         passo: 1,
-        descricao: "Puerto Montt → Puelche (balsa)",
-        emoji: "🚢"
+        descricao: "Osorno → Puerto Montt (centro da cidade)",
+        emoji: "🏙️"
       },
       {
         passo: 2, 
-        descricao: "Balsa Puelche → Caleta La Arena (30min)",
-        emoji: "⛴️"
+        descricao: "🎯 Puerto Montt → Placa KM 0 Carretera Austral",
+        emoji: "📸"
       },
       {
         passo: 3,
-        descricao: "Caleta La Arena → KM 0 Carretera Austral",
-        emoji: "🛣️"
+        descricao: "KM 0 → Puelche (Terminal Ferry)",
+        emoji: "🚢"
       },
       {
         passo: 4,
-        descricao: "KM 0 → Hornopirén (fim do dia)",
+        descricao: "⛴️ Balsa Puelche → Caleta La Arena → Hornopirén",
         emoji: "🏨"
       }
     ],
     
-    waypoints_url: "https://www.google.com/maps/dir/Puerto+Montt+Chile/Puelche+Ferry+Terminal/Caleta+La+Arena/Hornopiren+Chile",
+    waypoints_url: "https://www.google.com/maps/dir/Osorno+Chile/Puerto+Montt+Chile/Puelche+Ferry+Terminal/Caleta+La+Arena+Chile/Hornopiren+Chile",
     
     instrucoes_manuais: [
-      "1. Sair de Puerto Montt sentido Puelche",
-      "2. Terminal Ferry Puelche - balsa 30min para Caleta La Arena", 
-      "3. IMPORTANTE: Verificar horários das balsas!",
-      "4. Caleta La Arena → KM 0 Carretera Austral (placa oficial)",
-      "5. KM 0 → Hornopirén (50km pela RN 7)",
+      "1. Osorno → Puerto Montt centro (120km, 1h30)",
+      "2. 🎯 OBRIGATÓRIO: Buscar placa KM 0 CARRETERA AUSTRAL",
+      "3. 📸 FOTO OBRIGATÓRIA na placa KM 0 (marco histórico)",
+      "4. Puerto Montt → Terminal Ferry Puelche (50km)",
+      "5. ⛴️ Balsa Puelche → Caleta La Arena (30min navegação)",
+      "6. Caleta La Arena → Hornopirén (38km finais)",
       "",
-      "⚠️ Horários balsas: Verificar na chegada",
-      "🕐 Última balsa: Geralmente 18:00h"
+      "🎯 KM 0 = Início oficial da Carretera Austral",
+      "📍 Localização placa: Centro Puerto Montt, próximo ao porto",
+      "⚠️ Verificar horários das balsas (última ~18:00h)",
+      "🕐 Tempo total: 4h com parada para foto KM 0"
     ],
     
     evitar_rotas: [
-      "Rota terrestre direta - NÃO EXISTE conexão direta",
-      "Pular as balsas - IMPOSSÍVEL chegar sem elas",
-      "Não verificar horários - risco de perder última balsa"
+      "Rota direta Osorno → Hornopirén - perde marco KM 0 oficial",
+      "Pular Puerto Montt - perde início oficial Carretera Austral", 
+      "Não parar na placa KM 0 - perde foto histórica da viagem",
+      "Chegar muito tarde no terminal - risco perder última balsa"
     ],
     
     coordenadas_backup: {
+      "Placa KM 0 Carretera Austral": "-41.469000,-72.942000",
       "Terminal Ferry Puelche": "-41.628611,-72.968333",
-      "Caleta La Arena": "-41.875833,-72.683333",
-      "KM 0 Carretera Austral": "-41.926111,-72.645833"
+      "Caleta La Arena (desembarque)": "-41.875833,-72.683333",
+      "Hotel Hornopirén": "-41.926111,-72.645833"
     }
   },
 
-  8: {
+  9: {  // ✅ MANTIDO: Hornopirén → Chaitén (2 balsas críticas)
     titulo: "Hornopirén → Chaitén", 
-    subtitulo: "Balsas obrigatórias - horários críticos",
+    subtitulo: "🚢 2 BALSAS OBRIGATÓRIAS - Horários críticos",
     critico: true,
-    distancia: "58km + 2 balsas",
+    distancia: "167km + 2 balsas",
     tempo_estimado: "6h",
     
-    aviso_principal: "DIA MAIS CRÍTICO DA VIAGEM! São 2 balsas obrigatórias com horários fixos. Perder horário = perder o dia inteiro.",
+    aviso_principal: "🚨 DIA MAIS CRÍTICO DA VIAGEM! São 2 balsas sequenciais obrigatórias com horários fixos. Perder horário da primeira balsa = perder o dia inteiro e atrasar toda a viagem.",
     
     rota_correta: [
       {
         passo: 1,
-        descricao: "Hornopirén → Leptepu (balsa 1 - 2.5h)",
-        emoji: "🚢"
+        descricao: "🚢 Hornopirén → Terminal Leptepu (embarque 09:30h)",
+        emoji: "⏰"
       },
       {
         passo: 2, 
-        descricao: "Leptepu → Fiordo Largo (30km terra)",
-        emoji: "🛣️"
+        descricao: "⛴️ Balsa Leptepu → Fiordo Largo (2h30 navegação)",
+        emoji: "🚢"
       },
       {
         passo: 3,
-        descricao: "Fiordo Largo → Caleta Gonzalo (balsa 2 - 1h)",
-        emoji: "⛴️"
+        descricao: "🛣️ Fiordo Largo → Terminal Caleta Gonzalo (30km terra)",
+        emoji: "🏍️"
       },
       {
         passo: 4,
-        descricao: "Caleta Gonzalo → Chaitén (28km)",
+        descricao: "⛴️ Balsa Caleta Gonzalo → Chaitén (1h + 28km finais)",
         emoji: "🏨"
       }
     ],
@@ -195,31 +337,36 @@ const NAVEGACAO_PREDETERMINADA = {
     waypoints_url: "https://www.google.com/maps/dir/Hornopiren+Chile/Leptepu+Chile/Fiordo+Largo+Chile/Caleta+Gonzalo+Chile/Chaiten+Chile",
     
     instrucoes_manuais: [
-      "1. ACORDAR CEDO! Primeira balsa saindo 10:00h",
-      "2. Hornopirén → Terminal Leptepu (embarque 09:30h)",
-      "3. Balsa Leptepu → Fiordo Largo (2h30 navegação)", 
-      "4. Fiordo Largo → Terminal Caleta Gonzalo (30km)",
-      "5. Segunda balsa → Caleta Gonzalo (1h)",
-      "6. Caleta Gonzalo → Chaitén (28km finais)",
+      "1. 🚨 CRÍTICO: ACORDAR 07:00h - primeira balsa é 10:00h",
+      "2. 08:30h - Sair hotel Hornopirén → Terminal Leptepu (30min)",
+      "3. 09:30h - Chegada terminal Leptepu (embarque antecipado)",
+      "4. 10:00h - Balsa Leptepu → Fiordo Largo (2h30 navegação)",
+      "5. 12:30h - Desembarque Fiordo Largo → seguir 30km por terra",
+      "6. 13:30h - Terminal Caleta Gonzalo (segunda balsa)",
+      "7. 14:00h - Balsa Caleta Gonzalo → Chaitén (1h navegação)",
+      "8. 15:00h - Chaitén → hotel (28km finais)",
       "",
-      "🚨 CRÍTICO: Primeira balsa 10:00h - NÃO ATRASAR!",
-      "🕐 Se perder = esperar dia seguinte"
+      "⚠️ NUNCA chegar atrasado no terminal - balsas são pontuais",
+      "🕐 Se perder primeira balsa = esperar DIA SEGUINTE",
+      "📱 Confirmar horários na recepção do hotel (podem mudar por clima)"
     ],
     
     evitar_rotas: [
-      "Tentar ir sem as balsas - IMPOSSÍVEL, não há estrada",
-      "Chegar atrasado no terminal - balsas são pontuais",
-      "Não confirmar horários - podem variar por clima/maré"
+      "Tentar rota terrestre - IMPOSSÍVEL, não há estrada conectando",
+      "Chegar atrasado nos terminais - balsas saem no horário exato",
+      "Não confirmar horários - podem variar por clima/maré/temporada",
+      "Dormir até tarde - acordar 7h é OBRIGATÓRIO"
     ],
     
     coordenadas_backup: {
-      "Terminal Leptepu": "-42.383333,-72.633333",
-      "Terminal Fiordo Largo": "-42.450000,-72.766667",
-      "Terminal Caleta Gonzalo": "-42.516667,-72.716667"
+      "Terminal Leptepu (primeira balsa)": "-42.383333,-72.633333",
+      "Terminal Fiordo Largo (desembarque)": "-42.450000,-72.766667", 
+      "Terminal Caleta Gonzalo (segunda balsa)": "-42.516667,-72.716667",
+      "Hotel Chaitén (destino final)": "-42.917000,-72.708000"
     }
   },
 
-  13: {
+  14: {  // ✅ CORRIGIDO: era 13, agora é 14 (7 Lagos)
     titulo: "Villa La Angostura → Neuquén",
     subtitulo: "Ruta de los 7 Lagos",
     critico: true,
@@ -277,7 +424,8 @@ const NAVEGACAO_PREDETERMINADA = {
     }
   }
   
-  // Outros dias = null (não aparecem)
+  // ✅ OUTROS DIAS (1,2,5,7,8,10,11,12,13,15,16,17,18,19,20) = null (não aparecem)
+  // Apenas roteiro + hotel + postos normais, sem navegação pré-determinada
 };
 
 // Mapeamento de distâncias
@@ -359,12 +507,18 @@ const ConsultaMatinal: React.FC = () => {
         </div>
 
         {/* BOTÕES DE AÇÃO */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <button 
             onClick={() => window.open(dados.waypoints_url, '_blank')}
             className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center font-medium"
           >
-            🗺️ Rota Waypoints
+            🗺️ Google Maps
+          </button>
+          <button 
+            onClick={() => window.open(gerarLinkWaze(dados.waypoints_url), '_blank')}
+            className="bg-cyan-600 text-white px-4 py-3 rounded-lg hover:bg-cyan-700 transition-colors flex items-center justify-center font-medium"
+          >
+            📱 Waze
           </button>
           <button 
             onClick={() => mostrarInstrucoes(dados.instrucoes_manuais)}
@@ -420,6 +574,50 @@ const ConsultaMatinal: React.FC = () => {
       // Toast notification simples
       alert('Coordenadas copiadas para clipboard!');
     });
+  };
+
+  const gerarLinkWaze = (googleMapsUrl: string): string => {
+    try {
+      // Extrair coordenadas da URL do Google Maps
+      const url = new URL(googleMapsUrl);
+      const path = url.pathname;
+      
+      // Buscar padrão /dir/lat1,lng1/lat2,lng2/...
+      const coordMatch = path.match(/dir\/([^\/]+)/);
+      if (coordMatch) {
+        const coords = coordMatch[1].split('/');
+        const destCoord = coords[coords.length - 1];
+        
+        // Se for coordenada (formato -34.123,-71.456)
+        if (destCoord.match(/^-?\d+\.?\d*,-?\d+\.?\d*$/)) {
+          return `https://waze.com/ul?ll=${destCoord}&navigate=yes`;
+        }
+        
+        // Se for nome de cidade, usar o primeiro waypoint como destino
+        const primeiraCoord = coords.find(c => c.match(/^-?\d+\.?\d*,-?\d+\.?\d*$/));
+        if (primeiraCoord) {
+          return `https://waze.com/ul?ll=${primeiraCoord}&navigate=yes`;
+        }
+        
+        // Fallback: usar último item da URL como destino
+        const destination = coords[coords.length - 1];
+        return `https://waze.com/ul?q=${encodeURIComponent(destination)}&navigate=yes`;
+      }
+      
+      // Se não conseguir extrair do path, tentar query params
+      const searchParams = url.searchParams;
+      const destination = searchParams.get('destination');
+      if (destination) {
+        return `https://waze.com/ul?q=${encodeURIComponent(destination)}&navigate=yes`;
+      }
+      
+      // Último fallback
+      return 'https://waze.com/';
+      
+    } catch (error) {
+      console.error('Erro ao gerar link Waze:', error);
+      return 'https://waze.com/';
+    }
   };
 
   const extrairKilometragem = (trecho: string): string => {
